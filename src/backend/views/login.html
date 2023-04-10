@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Nejaký titulok</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+        <script src="https://kit.fontawesome.com/c4254e24a8.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <header class="main">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="#">Project</a></li>
+                <li><a href="#">More</a></li>
+                <li><a href="#">About</a></li>
+                <li></li>
+            </ul>
+        </header>
+
+        <div id="background-picture">
+            <div class="input-div">
+                <h1 id="form-header">Prihlásiť sa</h1>
+                <form id="input-form" action="/api/v1/auth/login" method="post">
+                    <div clas="input-group">
+                        <div class="input-field">
+                            <i class="fa-solid fa-user"></i>
+                            <input type="text" id="username-input" placeholder="Užívateľské meno">
+                        </div>
+                        <div class="input-field" id="email-div">
+                            <i class="fa-solid fa-envelope"></i>
+                            <input type="text" id="email-input" placeholder="Email">
+                        </div>
+                        <div class="input-field">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="password-input" placeholder="Heslo">
+                        </div>
+                        <div>
+                            <p id="error-message"></p>
+                            <p id="registration-message"></p>
+                            <p id="register-link">Nemáte konto? <a href="/api/v1/auth/register">Vytvorte si ho</a>.</p>
+                            <p id="login-link">Máte konto? <a href="/api/v1/auth/login">Prihláste sa</a>.</p>
+                            <p id="reset-link"><a href="/sspr">Nemôžete získať prístup k svojmu kontu?</a></p>
+                        </div>
+                        <div class="btn-field">
+                            <button type="button" class="login" id="button">Prihlásiť sa</button>
+                           <!--  <button type="button" id="registerBtn">Registrovať</button> -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            let button = document.getElementById("button");
+            /* let registerBtn = document.getElementById("loginBtn"); */
+            let title = document.getElementById("title");
+            const url = window.location.href;
+            let header = document.getElementById("form-header");
+            let form = document.getElementById("form");
+            let username = document.getElementById("username-input");
+            let email = document.getElementById("email-input");
+            let password = document.getElementById("password-input");
+            let errorMessage = document.getElementById("error-message");
+            let registrationMessage = document.getElementById("registration-message");
+
+
+            if (url.toString().includes("login")) {
+                /* document.getElementById("registerBtn").style.display = 'none'; */
+                button.innerHTML = "Prihlasiť sa";
+                button.className = "login";
+                document.getElementById("email-div").style.display = 'none';
+                document.getElementById("login-link").style.display = 'none';
+                header.innerHTML = "Prihlásiť sa";
+            } else if(url.toString().includes("register")) {
+                /* document.getElementById("loginBtn").style.display = 'none'; */
+                button.innerHTML = "Registrovať";
+                button.className = "register";
+                document.getElementById("register-link").style.display = 'none';
+                document.getElementById("reset-link").style.display = 'none';
+                header.innerHTML = "Registrovať sa";
+            }
+
+            const queryString = window.location.search;
+            const ulrParams = new URLSearchParams(queryString);
+            const regParam = ulrParams.get('registration');
+
+            if (regParam === "true") {
+                registrationMessage.innerHTML = "Registracia prebehla úspešne";
+                (
+                    setTimeout(() => {registrationMessage.innerHTML = ""}, 5000)
+                )
+            }
+
+
+            button.onclick = function() {
+                /* errorMessage.innerHTML = "";
+                username.style("border: 0px");
+                password.style("border: 0px"); */
+
+                if (button.className === "login") {
+                    console.log("/login")
+                    let myHeaders = new Headers();
+                    myHeaders.append("Content-Type", "application/json");
+
+                    let raw = JSON.stringify({
+                        "username": username.value,
+                        "password": password.value
+                    });
+
+                    let requestOptions = {
+                        method: 'POST',
+                        headers: myHeaders,
+                        body: raw,
+                        redirect: 'follow'
+                    };
+
+                    fetch("/api/v1/auth/login", requestOptions)
+                    .then(response => { 
+                        if (response.status === 200) {
+                            let bearerToken = response.headers.get("Authorization");
+                            //console.log(response.headers.get("Authorization"));
+                            // save to cookie?
+                            document.cookie = `access_token=${bearerToken};path=/`;
+                            window.location.href = "/api/v1/user/home";
+                        } else if (response.status === 400) {
+                            response.text().then(msg => {
+                                if (msg.includes("username"))
+                                    errorMessage.innerHTML = "Invalid username.";
+                                if (msg.includes("password"))
+                                    errorMessage.innerHTML = "Your password is incorrect.";
+                            });
+                            //errorMessage.innerHTML
+                        } else if (response.status === 403) {
+                            console.log("invalid username");
+                            //errorMessage.innerHTML = "Invalid username."
+                            //username.style("border: 1px solid rgba(255, 0, 0, 0.703);");
+                        } else if (response.status === 404) {
+                            console.log("pwd incorrect");
+                            //errorMessage.innerHTML = "Your password is incorrect."
+                            //password.style.border = "1px rgba(255, 0, 0, 0.703)";
+                        }
+                    })
+                    /*   .then(response => response.text())
+                    .then(result => console.log(result)) */
+                    .catch(error => console.log('error', error));
+/*                     fetch("/api/v1/auth/login", {
+                        method: "POST", 
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: "{'username': 'l','password': 'l'}"
+                    }).then(res => res.json())
+                    .then(data => console.log(data))
+                    .catch(error => { console.log(error); console.log(data.json()) }); */
+                } else {
+                    console.log("/register")
+                    let myHeaders = new Headers();
+                    myHeaders.append("Content-Type", "application/json");
+
+                    let raw = JSON.stringify({
+                        "username": username.value,
+                        "email": email.value,
+                        "password": password.value
+                    });
+
+                    var requestOptions = {
+                        method: 'POST',
+                        headers: myHeaders,
+                        body: raw,
+                        redirect: 'follow'
+                    };
+
+                    fetch("/api/v1/auth/register", requestOptions)
+                    .then(response => { 
+                        if (response.status === 201) {
+                            window.location.href = "/api/v1/auth/login?registration=true";
+                        } else if (response.status === 400) {
+                            response.text().then(msg => {
+                                console.log(msg)
+                                errorMessage.innerHTML = msg;
+                            });
+                        } else if (response.status === 409) {
+                            response.text().then(msg => {
+                                errorMessage.innerHTML = msg.toString();
+                            });
+                        }
+                    })
+                    .catch(error => console.log('error', error));
+                }
+            }
+
+        </script>
+
+
+    </body>
+</html>
