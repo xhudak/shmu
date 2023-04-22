@@ -38,10 +38,13 @@
         let   linkTag       = searchInput.querySelector("a");
         let   webLink;
         fetchCities().then(cities => {
-
-
+            input.onfocus = (e) => {
+                let suggestionArr = cities;
+                suggestionArr = suggestionArr.map((data) => '<li>' + data + '</li>');
+                searchInput.classList.add("active");
+                showSuggestions(suggestionArr);
+            }
             input.onkeyup = (e) => {
-                console.log("hello");
                 let userData = e.target.value; 
                 let suggestionArr = [];
                 if (userData) {
