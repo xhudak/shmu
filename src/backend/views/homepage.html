@@ -26,11 +26,10 @@
         // ===============================================================
         // taken from https://codepen.io/mey_mnry/pen/QWqPvox 
         //
-        //
         // ===============================================================
-        async function fetchCities() {
+        async function fetchCitiesNames() {
             const response = await fetch('/static/cities');
-            const cities = await response.json()
+            let cities = await response.json()
             return cities;
         }
 
@@ -39,9 +38,9 @@
         const resultBox     = searchInput.querySelector(".resultBox");
         let   linkTag       = searchInput.querySelector("a");
         let   webLink;
-        fetchCities().then(cities => {
+        fetchCitiesNames().then(cities => {
             input.onfocus = (e) => {
-                let suggestionArr = cities;
+                let suggestionArr = cities.map(e => e.name);
                 suggestionArr = suggestionArr.map((data) => '<li>' + data + '</li>');
                 searchInput.classList.add("active");
                 showSuggestions(suggestionArr);

@@ -15,9 +15,7 @@ export async function getCsvWeather(url: string) {
                 headers: { },
             },
         );
-        cities = await csvtojson({ delimiter: ';' })
-            .fromString(data)
-        cities = cities.map((e: any) => e.name);
+        cities = await csvtojson({ delimiter: ';' }).fromString(data)
         return cities;
     } 
     catch (err) {
