@@ -2,6 +2,8 @@ import express from "express";
 const app = express();
 import mongoose from "mongoose";
 import { IConfig } from "./Interfaces";
+import { getCsvWeather } from "./Modules/getCsvWeather";
+
 
 let config: IConfig = require('../../config.json');
 //let bodyParser = require('body-parser')
@@ -13,6 +15,7 @@ import { router as rootRoute } from "./Routes/root";
 import { router as sourcesRoute } from "./Routes/sources";
 import morganMiddleware from "./Middlewares/morgan";
 import cookieParser from "cookie-parser";
+import { getWeather } from "./Modules";
 
 // Connect to DB
 const connectionString: string = `mongodb+srv://${config.database.username}:${config.database.password}@wap.27syxzs.mongodb.net/?retryWrites=true&w=majority`;
@@ -38,3 +41,6 @@ app.use('/static', sourcesRoute);
 app.listen(config.server.port, () => {
     console.log(`Server started at: http://localhost:${config.server.port}/`);
 });
+
+getCsvWeather(config.weatherApi);
+

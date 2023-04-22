@@ -1,6 +1,7 @@
 export interface IConfig
 {
     weatherUrl: string;   
+    weatherApi: string;
     server: {
         address: string;
         port: number;

@@ -90,3 +90,7 @@ router.get("/logout", verifyToken, (req: Request, res: Response) => {
 router.post('/', (req: Request, res: Response) => {
     res.send("haha");
 });
+
+// voytex - cRm1vo4McCoiYC8o
+// mongodb+srv://<username>:<password>@wap.27syxzs.mongodb.net/?retryWrites=true&w=majority
+// https://www.youtube.com/watch?v=2jqok-WgelI
