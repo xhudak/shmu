@@ -1,6 +1,6 @@
 import express from "express";
 const app = express();
-import mongoose from "mongoose";
+import mongoose, { get } from "mongoose";
 import { IConfig } from "./Interfaces";
 import { getCsvWeather } from "./Modules/getCsvWeather";
 
@@ -42,5 +42,8 @@ app.listen(config.server.port, () => {
     console.log(`Server started at: http://localhost:${config.server.port}/`);
 });
 
-getCsvWeather(config.weatherApi);
+//getWeather(config.weatherUrl).then(d => console.log(d));
+
+
+
 

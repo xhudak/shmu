@@ -14,11 +14,63 @@
                 <li><a href="/api/v1/auth/login">Login</a></li>
             </ul>
         </header>
-        <h1>
-            
-        </h1>
+        <div class="container">
+            <div class="searchInput">
+              <input type="text" placeholder="Zadejte město...">
+              <div class="resultBox">
+              </div>
+            </div>
+          </div>
     </body>
     <script>
+        // ===============================================================
+        // taken from https://codepen.io/mey_mnry/pen/QWqPvox 
+        // ===============================================================
+        async function fetchCities() {
+            const response = await fetch('/static/cities');
+            const cities = await response.json()
+            return cities;
+        }
+
+        const searchInput   = document.querySelector(".searchInput");
+        const input         = searchInput.querySelector("input");
+        const resultBox     = searchInput.querySelector(".resultBox");
+        let   linkTag       = searchInput.querySelector("a");
+        let   webLink;
+        fetchCities().then(cities => {
+
+
+            input.onkeyup = (e) => {
+                console.log("hello");
+                let userData = e.target.value; 
+                let suggestionArr = [];
+                if (userData) {
+                    suggestionArr = cities.filter((data) => {
+                        return data.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase()); 
+                    });
+                    suggestionArr = suggestionArr.map((data) => '<li>'+ data +'</li>');
+                    searchInput.classList.add("active"); //show autocomplete box
+                    showSuggestions(suggestionArr);
+                    let allList = resultBox.querySelectorAll("li");
+                    for (let i = 0; i < allList.length; i++) {
+                        allList[i].setAttribute("onclick", "select(this)");
+                    }
+                } else {
+                    searchInput.classList.remove("active"); //hide autocomplete box
+                }
+            }
+        });
+
+        function showSuggestions(list) {
+            let listData;
+            if (!list.length) {
+                userValue = input.value;
+                listData = '<li>'+ userValue +'</li>';
+            } else {
+                listData = list.join('');
+            }
+            resultBox.innerHTML = listData;
+        }
 
     </script>
 </html>

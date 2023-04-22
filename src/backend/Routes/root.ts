@@ -1,7 +1,9 @@
 import { Router, Request, Response }  from "express";
 import path from "path";
 
+
 export const router = Router();
+
 
 
 router.get('/', (req: Request, res: Response) => {

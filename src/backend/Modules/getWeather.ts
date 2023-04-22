@@ -66,7 +66,7 @@ export async function getWeather(url: string) {
 
       // 👇️ "response status is: 200"
       console.log('response status is: ', status);
-        console.log(actualWeatherTable)
+        //console.log(actualWeatherTable)
       return data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
