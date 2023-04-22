@@ -28,6 +28,7 @@
     "cheerio": "^1.0.0-rc.12",
     "cookie-parser": "^1.4.6",
     "create-vue": "^3.6.1",
+    "csvtojson": "^2.0.10",
     "express": "^4.18.2",
     "joi": "^17.9.1",
     "jsonwebtoken": "^9.0.0",

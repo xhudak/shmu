@@ -1,4 +1,5 @@
 import axios from "axios";
+const csvtojson = require('csvtojson');
 
 export async function getCsvWeather(url: string) {
     try {
@@ -9,6 +10,13 @@ export async function getCsvWeather(url: string) {
         },
       );
         console.log(data);
+        csvtojson({
+            delimiter: ';'
+        })
+            .fromString(data)
+            .then((jsonObj: JSON) => {
+                console.log(jsonObj);
+            })
     } 
     catch (err) {
         console.log(err);
