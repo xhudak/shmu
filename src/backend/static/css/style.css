@@ -237,3 +237,9 @@ p > a {
     color: #644bff;
     cursor: pointer;
   }
+
+   {
+    font-size: large;
+    position: absolute;
+    left: 100px;
+  }

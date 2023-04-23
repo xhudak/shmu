@@ -14,13 +14,18 @@
                 <li><a href="/api/v1/auth/login">Login</a></li>
             </ul>
         </header>
+        <div class = "container" style = "font-size: large;">
+            <table id="weatherInfo">
+            </table>
+        </div>
         <div class="container">
             <div class="searchInput">
               <input type="text" placeholder="Zadejte město...">
               <div class="resultBox">
               </div>
             </div>
-          </div>
+        </div>
+
     </body>
     <script>
         // ===============================================================
@@ -33,6 +38,16 @@
             return cities;
         }
 
+        function populateWeatherTable(e, cities) {
+            let cityString = e.target.innerHTML;
+            input.value = cityString;
+            let city = cities.find((c) => c.name === cityString);
+            //console.log(city);
+            const table = document.getElementById("weatherInfo");
+            table.innerHTML = `<tr><tc>${cityString}</tc>
+                               <tr><tc>${city.ta_2m}`;
+        }
+
         const searchInput   = document.querySelector(".searchInput");
         const input         = searchInput.querySelector("input");
         const resultBox     = searchInput.querySelector(".resultBox");
@@ -40,16 +55,22 @@
         let   webLink;
         fetchCitiesNames().then(cities => {
             input.onfocus = (e) => {
-                let suggestionArr = cities.map(e => e.name);
-                suggestionArr = suggestionArr.map((data) => '<li>' + data + '</li>');
+                let suggestionArr = cities;
+                suggestionArr = suggestionArr.map((data) => '<li>' + data.name + '</li>');
                 searchInput.classList.add("active");
                 showSuggestions(suggestionArr);
+                let allList = resultBox.querySelectorAll("li");
+                for (let i = 0; i < allList.length; i++) {
+                        allList[i].onclick = (e) => {
+                            populateWeatherTable(e, cities);
+                        }                        //allList[i].setAttribute("onclick", "select(this)");
+                }
             }
             input.onkeyup = (e) => {
                 let userData = e.target.value; 
                 let suggestionArr = [];
                 if (userData) {
-                    suggestionArr = cities.filter((data) => {
+                    suggestionArr = cities.map(e => e.name).filter((data) => {
                         return data.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase()); 
                     });
                     suggestionArr = suggestionArr.map((data) => '<li>'+ data +'</li>');
@@ -57,7 +78,9 @@
                     showSuggestions(suggestionArr);
                     let allList = resultBox.querySelectorAll("li");
                     for (let i = 0; i < allList.length; i++) {
-                        allList[i].setAttribute("onclick", "select(this)");
+                        allList[i].onclick = (e) => {
+                            populateWeatherTable(e, cities);
+                        }
                     }
                 } else {
                     searchInput.classList.remove("active"); //hide autocomplete box
