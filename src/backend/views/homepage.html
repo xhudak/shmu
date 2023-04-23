@@ -15,8 +15,9 @@
             </ul>
         </header>
         <div class = "container" style = "font-size: large;">
-            <table id="weatherInfo">
-            </table>
+            <div id="weatherInfo">
+
+            </div>
         </div>
         <div class="container">
             <div class="searchInput">
@@ -43,9 +44,11 @@
             input.value = cityString;
             let city = cities.find((c) => c.name === cityString);
             //console.log(city);
-            const table = document.getElementById("weatherInfo");
-            table.innerHTML = `<tr><tc>${cityString}</tc>
-                               <tr><tc>${city.ta_2m}`;
+            const div = document.getElementById("weatherInfo");
+            if (city.ta_2m !== "null") {
+                div.innerHTML = `${cityString} <b>${city.ta_2m}°C`;
+            }
+            
         }
 
         const searchInput   = document.querySelector(".searchInput");

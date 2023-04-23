@@ -4,7 +4,7 @@ const csvtojson = require('csvtojson');
 export async function getCsvWeather(url: string) {
     const date = new Date();
     let currDateTime: string;
-    currDateTime = `${date.getDate()}.${date.getMonth()+1}.${date.getFullYear()}:${date.getHours()}`;
+    currDateTime = `${date.getDate()}.${date.getMonth()+1}.${date.getFullYear()}:${date.getHours()-2}`;
     url += `;date=${currDateTime}`;
     let cities: any;
 
